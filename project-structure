@@ -1,0 +1,19 @@
+src/
+  ├── components/
+  │   ├── Header/
+  │   ├── Hero/
+  │   ├── About/
+  │   ├── Projects/
+  │   ├── Services/
+  │   └── Contact/ 
+  ├── styles/
+  │   └── GlobalStyles.js
+  ├── utils/
+  │   └── smoothScroll.js
+  ├── App.jsx
+  └── main.jsx
+  ├── assets/
+  │   └── fonts/
+  │       ├── MazzardH-Regular.woff2
+  │       ├── MazzardH-Medium.woff2
+  │       └── MazzardH-Bold.woff2 
