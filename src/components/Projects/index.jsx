@@ -8,14 +8,39 @@ gsap.registerPlugin(ScrollTrigger)
 
 // Add throttle utility at the top of the file
 const throttle = (func, limit) => {
-    let inThrottle;
-    return function(...args) {
+    let inThrottle
+    return function (...args) {
         if (!inThrottle) {
-            func.apply(this, args);
-            inThrottle = true;
-            setTimeout(() => inThrottle = false, limit);
+            func.apply(this, args)
+            inThrottle = true
+            setTimeout(() => (inThrottle = false), limit)
         }
     }
+}
+
+// Проверим импорты в консоли для отладки
+const projectImages = {
+    project1: import.meta.glob('/src/assets/projects/project-18/*.{png,jpg,jpeg,webp}', { eager: true }),
+    project2: import.meta.glob('/src/assets/projects/project-2/*.{png,jpg,jpeg,webp}', { eager: true }),
+    project3: import.meta.glob('/src/assets/projects/project-5/*.{png,jpg,jpeg,webp}', { eager: true }),
+    project4: import.meta.glob('/src/assets/projects/project-9/*.{png,jpg,jpeg,webp}', { eager: true }),
+    project5: import.meta.glob('/src/assets/projects/project-1/*.{png,jpg,jpeg,webp}', { eager: true }),
+    project6: import.meta.glob('/src/assets/projects/project-13/*.{png,jpg,jpeg,webp}', { eager: true }),
+    project7: import.meta.glob('/src/assets/projects/project-8/*.{png,jpg,jpeg,webp}', { eager: true }),
+    project8: import.meta.glob('/src/assets/projects/project-16/*.{png,jpg,jpeg,webp}', { eager: true }),
+    project9: import.meta.glob('/src/assets/projects/project-12/*.{png,jpg,jpeg,webp}', { eager: true }),
+    project10: import.meta.glob('/src/assets/projects/project-6/*.{png,jpg,jpeg,webp}', { eager: true }),
+    project11: import.meta.glob('/src/assets/projects/project-11/*.{png,jpg,jpeg,webp}', { eager: true }),
+    project12: import.meta.glob('/src/assets/projects/project-14/*.{png,jpg,jpeg,webp}', { eager: true }),
+}
+
+// Добавим проверку при получении изображений
+const getProjectImages = projectKey => {
+    const images = Object.values(projectImages[projectKey] || {}).map(module => module.default)
+    if (images.length === 0) {
+        console.warn(`No images found for ${projectKey}`)
+    }
+    return images
 }
 
 const ProjectsSection = styled.section`
@@ -399,7 +424,7 @@ const ProjectCard = styled(motion.div)`
     opacity: 0;
     transform: translate3d(0, 50px, 0);
     will-change: transform, opacity;
-    
+
     &.visible {
         transform: translate3d(0, 0, 0);
         opacity: 1;
@@ -483,12 +508,12 @@ const GalleryButton = styled.button`
     top: 50%;
     transform: translateY(-50%);
     background: rgba(0, 0, 0, 0.5);
-    border: none;
     color: white;
     padding: 0.5rem;
     cursor: pointer;
     z-index: 2;
     transition: all 0.3s ease;
+    border-radius: 30px;
     opacity: 0;
 
     &:hover {
@@ -516,12 +541,14 @@ const GalleryButton = styled.button`
         opacity: 1;
         padding: 1rem;
         margin: 0rem 1rem 0rem 1rem;
-        background: rgba(0, 0, 0, 0.7);
+        background: rgba(0, 0, 0, 0.66);
         font-size: 1rem;
+        border-radius: 30px;
     }
 
     @media (max-width: 768px) {
         padding: 0.8rem;
+        border-radius: 30px;
     }
 `
 
@@ -548,7 +575,7 @@ const ProjectInfo = styled.div`
 `
 
 const ProjectTitle = styled.h3`
-    font-family: 'Orbitron', sans-serif;
+    font-family: 'Mazzard H', sans-serif;
     font-size: clamp(1.2rem, 2vw, 2rem);
     margin-bottom: 0.5rem;
     background: linear-gradient(45deg, #fff, #a8a8a8);
@@ -576,56 +603,97 @@ const SectionTitle = styled.h2`
 
 const Projects = () => {
     const projectRefs = useRef([])
-    const [currentImageIndices, setCurrentImageIndices] = useState(new Array(9).fill(0))
+    const [currentImageIndices, setCurrentImageIndices] = useState(() => {
+        // Создаем массив с 12 нулями для всех проектов
+        return Array(12).fill(0)
+    })
     const [visibleProjects, setVisibleProjects] = useState(new Set())
 
     const projects = [
         {
-            title: 'Жилой комплекс "Горизонт"',
+            title: 'Проект №1',
             description: 'Современный жилой комплекс с панорамными видами на город.',
-            images: [
-                'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1000&q=80',
-                'https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=1000&q=80',
-                'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1000&q=80',
-            ],
+            images: getProjectImages('project1'),
         },
         {
-            title: 'Бизнес-центр "Империя"',
+            title: 'Проект №2',
+            description: 'Частный дом в неоклассическом стиле — сочетание изящества и вечной эстетики✨',
+            images: getProjectImages('project2'),
+        },
+        {
+            title: 'Проект №3',
             description:
-                'Инновационное офисное пространство, объединяющее функциональность и эстетику современной архитектуры.',
-            images: [
-                'https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=1000&q=80',
-                'https://images.unsplash.com/photo-1577495508048-b635879837f2?auto=format&fit=crop&w=1000&q=80',
-                'https://images.unsplash.com/photo-1566073771259-6a8506099947?auto=format&fit=crop&w=1000&q=80',
-            ],
+                'Дизайн-проект жилого дома, сочетающий элементы легкой неоклассики, представленной в изысканных формах и стилях✨',
+            images: getProjectImages('project3'),
         },
         {
-            title: 'Вилла "Оазис"',
-            description:
-                'Уникальный проект частной резиденции, где каждая деталь создает атмосферу роскоши и комфорта.',
-            images: [
-                'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1000&q=80',
-                'https://images.unsplash.com/photo-1613490493576-7fde63acd812?auto=format&fit=crop&w=1000&q=80',
-                'https://images.unsplash.com/photo-1613490493576-7fde63acd813?auto=format&fit=crop&w=1000&q=80',
-            ],
+            title: 'Проект №4',
+            description: 'Проект частной резиденции с пентхаусом и отдельным входом с улицы в неоклассическом стиле✨',
+            images: getProjectImages('project4'),
         },
         {
-            title: 'Эко-отель "Природа"',
+            title: 'Проект №5"',
+            description: 'В этом проекте мы сохранили лучшие решения из предыдущего, добавив по просьбе клиента летнюю кухню и удобный тамбур при входе✨',
+            images: getProjectImages('project5'),
+        },
+        {
+            title: 'Проект №6',
             description: 'Устойчивый архитектурный проект, гармонично вписанный в природный ландшафт.',
-            images: [
-                'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1000&q=80',
-                'https://images.unsplash.com/photo-1566073771259-6a8506099946?auto=format&fit=crop&w=1000&q=80',
-                'https://images.unsplash.com/photo-1566073771259-6a8506099947?auto=format&fit=crop&w=1000&q=80',
-            ],
+            images: getProjectImages('project6'),
         },
-    ]
+        {
+            title: 'Проект №7',
+            description: 'Устойчивый архитектурный проект, гармонично вписанный в природный ландшафт.',
+            images: getProjectImages('project7'),
+        },
+        {
+            title: 'Проект №8',
+            description: 'Проект частного дома в неоклассическом стиле✨',
+            images: getProjectImages('project8'),
+        },
+        {
+            title: 'Проект №9',
+            description: 'Устойчивый архитектурный проект, гармонично вписанный в природный ландшафт.',
+            images: getProjectImages('project9'),
+        },
+        {
+            title: 'Проект №10',
+            description: 'Дом в стиле неоклассицизма, который сочетает в себе элегантность и функциональность✨',
+            images: getProjectImages('project10'),
+        },
+        {
+            title: 'Проект №11',
+            description: 'Устойчивый архитектурный проект, гармонично вписанный в природный ландшафт.',
+            images: getProjectImages('project11'),
+        },
+        {
+            title: 'Проект №12',
+            description: 'Устойчивый архитектурный проект, гармонично вписанный в природный ландшафт.',
+            images: getProjectImages('project12'),
+        },
+    ].filter(project => {
+        const hasImages = project.images && project.images.length > 0
+        if (!hasImages) {
+            console.warn('Project filtered out due to missing images')
+        }
+        return hasImages
+    })
+
+    // Добавим консоль лог для проверки количества изображений
+    useEffect(() => {
+        projects.forEach((project, index) => {
+            console.log(`Project ${index + 1} has ${project.images.length} images`)
+        })
+    }, [])
 
     const handlePrevImage = projectIndex => {
         setCurrentImageIndices(prevIndices => {
             const newIndices = [...prevIndices]
-            newIndices[projectIndex] =
-                (newIndices[projectIndex] - 1 + projects[projectIndex].images.length) %
-                projects[projectIndex].images.length
+            const project = projects[projectIndex]
+            if (project && project.images) {
+                newIndices[projectIndex] =
+                    (newIndices[projectIndex] - 1 + project.images.length) % project.images.length
+            }
             return newIndices
         })
     }
@@ -633,14 +701,17 @@ const Projects = () => {
     const handleNextImage = projectIndex => {
         setCurrentImageIndices(prevIndices => {
             const newIndices = [...prevIndices]
-            newIndices[projectIndex] = (newIndices[projectIndex] + 1) % projects[projectIndex].images.length
+            const project = projects[projectIndex]
+            if (project && project.images) {
+                newIndices[projectIndex] = (newIndices[projectIndex] + 1) % project.images.length
+            }
             return newIndices
         })
     }
 
     useEffect(() => {
-        const cards = projectRefs.current;
-        let scrollTriggers = [];
+        const cards = projectRefs.current
+        let scrollTriggers = []
 
         cards.forEach((card, i) => {
             const trigger = ScrollTrigger.create({
@@ -656,17 +727,17 @@ const Projects = () => {
                         duration: 0.8,
                         ease: 'power2.out',
                         overwrite: true,
-                    });
-                }
-            });
-            scrollTriggers.push(trigger);
-        });
+                    })
+                },
+            })
+            scrollTriggers.push(trigger)
+        })
 
         return () => {
-            scrollTriggers.forEach(trigger => trigger.kill());
-            scrollTriggers = [];
-        };
-    }, []);
+            scrollTriggers.forEach(trigger => trigger.kill())
+            scrollTriggers = []
+        }
+    }, [])
 
     // Optimize scroll handler with throttle
     const handleScroll = useCallback(
@@ -674,25 +745,25 @@ const Projects = () => {
             requestAnimationFrame(() => {
                 projectRefs.current.forEach(ref => {
                     if (ref) {
-                        const rect = ref.getBoundingClientRect();
-                        const isInView = rect.top < window.innerHeight && rect.bottom > 0;
-                        
+                        const rect = ref.getBoundingClientRect()
+                        const isInView = rect.top < window.innerHeight && rect.bottom > 0
+
                         if (isInView) {
-                            ref.style.willChange = 'transform, opacity';
+                            ref.style.willChange = 'transform, opacity'
                         } else {
-                            ref.style.willChange = 'auto';
+                            ref.style.willChange = 'auto'
                         }
                     }
-                });
-            });
+                })
+            })
         }, 100),
-        []
-    );
+        [],
+    )
 
     useEffect(() => {
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [handleScroll]);
+        window.addEventListener('scroll', handleScroll, { passive: true })
+        return () => window.removeEventListener('scroll', handleScroll)
+    }, [handleScroll])
 
     // Optimize observer
     useEffect(() => {
@@ -700,31 +771,31 @@ const Projects = () => {
             entries => {
                 requestAnimationFrame(() => {
                     entries.forEach(entry => {
-                        const projectId = entry.target.getAttribute('data-project-id');
+                        const projectId = entry.target.getAttribute('data-project-id')
                         setVisibleProjects(prev => {
-                            const newSet = new Set(prev);
+                            const newSet = new Set(prev)
                             if (entry.isIntersecting) {
-                                newSet.add(projectId);
+                                newSet.add(projectId)
                             } else {
-                                newSet.delete(projectId);
+                                newSet.delete(projectId)
                             }
-                            return newSet;
-                        });
-                    });
-                });
+                            return newSet
+                        })
+                    })
+                })
             },
             {
                 threshold: 0.2,
-                rootMargin: '50px'
-            }
-        );
+                rootMargin: '50px',
+            },
+        )
 
         projectRefs.current.forEach(ref => {
-            if (ref) observer.observe(ref);
-        });
+            if (ref) observer.observe(ref)
+        })
 
-        return () => observer.disconnect();
-    }, []);
+        return () => observer.disconnect()
+    }, [])
 
     const generateGridLines = () => {
         const lines = []
@@ -746,12 +817,16 @@ const Projects = () => {
     }
 
     const renderProjectImages = (project, index) => {
+        if (!project.images || project.images.length === 0) {
+            console.warn(`No images for project ${index + 1}`)
+            return null
+        }
+
         const images = project.images
-        const currentIndex = currentImageIndices[index]
+        const currentIndex = currentImageIndices[index] || 0
 
         return images.map((image, imgIndex) => {
             let offset = (imgIndex - currentIndex) * 100
-            // Optimize animation for prev/next
             if (offset > 100) offset -= images.length * 100
             if (offset < -100) offset += images.length * 100
 
@@ -789,29 +864,36 @@ const Projects = () => {
             </BackgroundElements>
             <SectionTitle>Наши Проекты</SectionTitle>
             <ProjectsContainer>
-                {projects.map((project, i) => (
-                    <ProjectCard key={i} ref={el => (projectRefs.current[i] = el)} data-project-id={`project-${i}`}>
-                        <ProjectImageWrapper>
-                            {renderProjectImages(project, i)}
-                            <GalleryButton
-                                className="prev"
-                                onClick={e => {
-                                    e.stopPropagation()
-                                    handlePrevImage(i)
-                                }}>
-                                &#8249;
-                            </GalleryButton>
-                            <GalleryButton
-                                className="next"
-                                onClick={e => {
-                                    e.stopPropagation()
-                                    handleNextImage(i)
-                                }}>
-                                &#8250;
-                            </GalleryButton>
-                        </ProjectImageWrapper>
-                    </ProjectCard>
-                ))}
+                {projects.map(
+                    (project, i) =>
+                        project.images &&
+                        project.images.length > 0 && (
+                            <ProjectCard
+                                key={i}
+                                ref={el => (projectRefs.current[i] = el)}
+                                data-project-id={`project-${i}`}>
+                                <ProjectImageWrapper>
+                                    {renderProjectImages(project, i)}
+                                    <GalleryButton
+                                        className="prev"
+                                        onClick={e => {
+                                            e.stopPropagation()
+                                            handlePrevImage(i)
+                                        }}>
+                                        &#8249;
+                                    </GalleryButton>
+                                    <GalleryButton
+                                        className="next"
+                                        onClick={e => {
+                                            e.stopPropagation()
+                                            handleNextImage(i)
+                                        }}>
+                                        &#8250;
+                                    </GalleryButton>
+                                </ProjectImageWrapper>
+                            </ProjectCard>
+                        ),
+                )}
             </ProjectsContainer>
         </ProjectsSection>
     )

@@ -10,6 +10,8 @@ import Services from './components/Services'
 import Contact from './components/Contact'
 import gsap from 'gsap'
 import { initSmoothScroll } from './utils/smoothScroll'
+import Footer from './components/Footer'
+import Price from './components/Price'
 
 const AppContainer = styled.div`
     position: relative;
@@ -21,7 +23,7 @@ const AppContainer = styled.div`
 const Main = styled.main`
     position: relative;
     width: 100%;
-    opacity: ${props => props.loading ? 0 : 1};
+    opacity: ${props => (props.loading ? 0 : 1)};
     transition: opacity 0.5s ease;
 `
 
@@ -36,8 +38,8 @@ const App = () => {
 
         // Сократим время загрузки
         setTimeout(() => {
-            setLoading(false);
-        }, 1000);
+            setLoading(false)
+        }, 1000)
 
         return () => {
             if (lenis) lenis.destroy()
@@ -67,12 +69,14 @@ const App = () => {
                         <About id="about" />
                         <Services id="services" />
                         <Projects id="projects" />
+                        <Price id="price" />
                         <Contact id="contact" />
+                        <Footer />
                     </Main>
                 </AppContainer>
             )}
         </>
-    );
-};
+    )
+}
 
-export default App;
+export default App

@@ -183,6 +183,7 @@ const Header = () => {
                                 { id: 'about', label: 'О нас' },
                                 { id: 'services', label: 'Услуги' },
                                 { id: 'projects', label: 'Проекты' },
+                                { id: 'price', label: 'Наши тарифы' },
                                 { id: 'contact', label: 'Контакты' }
                             ].map(({ id, label }) => (
                                 <NavLink

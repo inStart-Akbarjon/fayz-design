@@ -1,234 +1,424 @@
-import { useEffect, useRef } from 'react';
-import styled from 'styled-components';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useRef, useEffect, useState } from 'react' // Add useState
+import styled from 'styled-components'
+import { motion } from 'framer-motion'
+import gsap from 'gsap'
+import ScrollTrigger from 'gsap/ScrollTrigger'
+import { FaInstagram, FaTelegram, FaXTwitter } from 'react-icons/fa6' // Add this import
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger)
 
 const ContactSection = styled.section`
-  min-height: 100vh;
-  background-color: #ffffff;
-  color: var(--color-text);
-  padding: 8rem 2rem;
-  position: relative;
-  display: flex;
-  align-items: center;
-`;
+    background-color: #0f0f0f;
+    position: relative;
+    min-height: 100vh;
+    padding: 100px 0;
+    overflow: hidden;
+`
 
-const Container = styled.div`
-  max-width: 1400px;
-  width: 100%;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
+const ContactGrid = styled.div`
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
 
-  @media (max-width: 968px) {
-    grid-template-columns: 1fr;
-  }
-`;
+    @media (max-width: 968px) {
+        grid-template-columns: 1fr;
+    }
+`
 
-const ContactInfo = styled.div`
-  padding: 2rem;
-`;
+const TitleWrapper = styled.div`
+    text-align: center;
+    margin-bottom: 4rem;
+`
 
-const Title = styled.h2`
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  margin-bottom: 2rem;
-  line-height: 1.1;
-`;
+const ContactTitle = styled.h2`
+    font-size: clamp(2rem, 5vw, 4rem);
+    color: white;
+    font-family: 'Mazzard H', sans-serif;
+    background: linear-gradient(45deg, #fff, #666);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1rem;
+`
 
-const Description = styled.p`
-  font-size: 1.1rem;
-  line-height: 1.6;
-  margin-bottom: 3rem;
-  opacity: 0.8;
-`;
+const ContactSubtitle = styled.p`
+    color: #888;
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    max-width: 600px;
+    margin: 0 auto;
+`
 
-const ContactDetails = styled.div`
-  margin-top: 4rem;
-`;
+const ContactForm = styled(motion.form)`
+    background: rgba(255, 255, 255, 0.03);
+    padding: 3rem;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 
-const ContactItem = styled.div`
-  margin-bottom: 2rem;
-  
-  h3 {
-    font-size: 1.2rem;
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05));
+        pointer-events: none;
+        border-radius: 15px;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        inset: -1px;
+        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        border-radius: 15px;
+        z-index: -1;
+        animation: borderGlow 3s linear infinite;
+    }
+
+    @keyframes borderGlow {
+        0%,
+        100% {
+            opacity: 0.5;
+        }
+        50% {
+            opacity: 1;
+        }
+    }
+`
+
+const FormGroup = styled.div`
+    margin-bottom: 2rem;
+`
+
+const Label = styled.label`
+    display: block;
+    color: #fff;
     margin-bottom: 0.5rem;
-    color: var(--color-accent);
-  }
-  
-  p {
-    font-size: 1.1rem;
-  }
-`;
-
-const FormContainer = styled.div`
-  background: #ffffff;
-  padding: 3rem;
-  border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
-`;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-`;
-
-const InputGroup = styled.div`
-  position: relative;
-`;
+    font-family: 'Mazzard H', sans-serif;
+`
 
 const Input = styled.input`
-  width: 100%;
-  padding: 1rem;
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  font-family: var(--font-primary);
+    width: 100%;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    position: relative;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(5px);
 
-  &:focus {
-    outline: none;
-    border-bottom-color: var(--color-accent);
-  }
+    &:focus {
+        border-color: rgba(255, 255, 255, 0.3);
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.5);
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    }
+`
 
-  &::placeholder {
-    color: rgba(0, 0, 0, 0.4);
-  }
-`;
+const TextArea = styled(Input).attrs({ as: 'textarea' })`
+    min-height: 150px;
+    resize: vertical;
+`
 
-const TextArea = styled.textarea`
-  width: 100%;
-  padding: 1rem;
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
-  font-size: 1rem;
-  min-height: 150px;
-  resize: vertical;
-  font-family: var(--font-primary);
-  transition: all 0.3s ease;
+const SubmitButton = styled(motion.button)`
+    padding: 1rem 2rem;
+    background: linear-gradient(45deg, #1a1a1a, #333);
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-family: 'Mazzard', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
 
-  &:focus {
-    outline: none;
-    border-bottom-color: var(--color-accent);
-  }
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+    }
 
-  &::placeholder {
-    color: rgba(0, 0, 0, 0.4);
-  }
-`;
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: 0.5s;
+    }
 
-const SubmitButton = styled.button`
-  background-color: var(--color-accent);
-  color: white;
-  padding: 1rem 2rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  margin-top: 1rem;
+    &:hover::before {
+        left: 100%;
+    }
+`
 
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(146, 121, 99, 0.2);
-  }
-`;
+const ContactInfo = styled(motion.div)`
+    color: #fff;
+`
+
+const InfoCard = styled(motion.div)`
+    background: rgba(255, 255, 255, 0.03);
+    padding: 2rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease;
+    position: relative;
+    overflow: hidden;
+
+    &:hover {
+        transform: translateY(-5px);
+    }
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+        transition: 0.5s;
+    }
+
+    &:hover::before {
+        left: 100%;
+    }
+`
+
+const InfoTitle = styled.h3`
+    font-family: 'Mazzard H', sans-serif;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(45deg, #fff, #888);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+`
+
+const InfoText = styled.p`
+    color: #aaa;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    svg {
+        font-size: 1.2rem;
+        color: #666;
+    }
+`
+
+const Map = styled.div`
+    height: 400px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 2rem;
+
+    iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+`
+
+const SocialLinks = styled.div`
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+`
+
+const SocialIcon = styled(motion.a)`
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-2px);
+    }
+
+    svg {
+        width: 20px;
+        height: 20px;
+        color: #fff;
+    }
+`
+
+const FormStatus = styled(motion.div)`
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    background: ${props => (props.success ? 'rgba(0, 180, 0, 0.9)' : 'rgba(180, 0, 0, 0.9)')};
+    color: white;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+`
 
 const Contact = () => {
-  const sectionRef = useRef(null);
-  const formRef = useRef(null);
-  const infoRef = useRef(null);
+    const formRef = useRef()
+    const infoRef = useRef()
+    const [formStatus, setFormStatus] = useState(null)
 
-  useEffect(() => {
-    // Устанавливаем начальное состояние
-    gsap.set([infoRef.current.children, formRef.current], {
-      opacity: 0,
-      y: 50
-    });
+    useEffect(() => {
+        gsap.fromTo(
+            formRef.current,
+            { x: -100, opacity: 0 },
+            {
+                x: 0,
+                opacity: 1,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: formRef.current,
+                    start: 'top center+=100',
+                    end: 'bottom center',
+                    toggleActions: 'play none none reverse',
+                },
+            },
+        )
 
-    // Анимация для информационного блока
-    gsap.to(infoRef.current.children, {
-      opacity: 1,
-      y: 0,
-      duration: 1,
-      stagger: 0.2,
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: 'top 70%',
-        toggleActions: 'play none none reverse',
-      },
-    });
+        gsap.fromTo(
+            infoRef.current,
+            { x: 100, opacity: 0 },
+            {
+                x: 0,
+                opacity: 1,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: infoRef.current,
+                    start: 'top center+=100',
+                    end: 'bottom center',
+                    toggleActions: 'play none none reverse',
+                },
+            },
+        )
+    }, [])
 
-    // Анимация для формы
-    gsap.to(formRef.current, {
-      opacity: 1,
-      y: 0,
-      duration: 1,
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: 'top 70%',
-        toggleActions: 'play none none reverse',
-      },
-    });
+    const handleSubmit = async e => {
+        e.preventDefault()
+        const formData = new FormData(e.target)
 
-    return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-    };
-  }, []);
+        try {
+            // Здесь будет логика отправки формы
+            setFormStatus({ success: true, message: 'Сообщение успешно отправлено!' })
+            e.target.reset() // Очищаем форму после успешной отправки
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Здесь будет логика отправки формы
-  };
+            // Автоматически скрываем сообщение через 3 секунды
+            setTimeout(() => setFormStatus(null), 3000)
+        } catch (error) {
+            setFormStatus({ success: false, message: 'Ошибка при отправке. Попробуйте позже.' })
+            setTimeout(() => setFormStatus(null), 3000)
+        }
+    }
 
-  return (
-    <ContactSection ref={sectionRef} id="contact">
-      <Container>
-        <ContactInfo ref={infoRef}>
-          <Title>Давайте обсудим ваш проект</Title>
-          <Description>
-            Мы всегда открыты для обсуждения новых проектов и идей. 
-            Свяжитесь с нами любым удобным способом, и мы ответим вам в ближайшее время.
-          </Description>
-          <ContactDetails>
-            <ContactItem>
-              <h3>Адрес</h3>
-              <p>ул. Примерная, 123, Город</p>
-            </ContactItem>
-            <ContactItem>
-              <h3>Email</h3>
-              <p>info@fayzdesign.com</p>
-            </ContactItem>
-            <ContactItem>
-              <h3>Телефон</h3>
-              <p>+7 (999) 123-45-67</p>
-            </ContactItem>
-          </ContactDetails>
-        </ContactInfo>
-        <FormContainer ref={formRef}>
-          <Form onSubmit={handleSubmit}>
-            <InputGroup>
-              <Input type="text" placeholder="Ваше имя" required />
-            </InputGroup>
-            <InputGroup>
-              <Input type="email" placeholder="Email" required />
-            </InputGroup>
-            <InputGroup>
-              <Input type="tel" placeholder="Телефон" />
-            </InputGroup>
-            <InputGroup>
-              <TextArea placeholder="Расскажите о вашем проекте" required />
-            </InputGroup>
-            <SubmitButton type="submit">Отправить сообщение</SubmitButton>
-          </Form>
-        </FormContainer>
-      </Container>
-    </ContactSection>
-  );
-};
+    return (
+        <ContactSection id="contact">
+            {' '}
+            {/* Убедимся, что ID установлен здесь */}
+            <TitleWrapper>
+                <ContactTitle>Свяжитесь с нами</ContactTitle>
+                <ContactSubtitle>
+                    Готовы обсудить ваш проект? Мы всегда на связи и готовы помочь воплотить ваши идеи в жизнь.
+                </ContactSubtitle>
+            </TitleWrapper>
+            <ContactGrid>
+                <ContactForm ref={formRef} onSubmit={handleSubmit}>
+                    <FormGroup>
+                        <Label>Имя</Label>
+                        <Input type="text" required />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label>Номер телефона</Label>
+                        <Input type="number" required />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label>Сообщение</Label>
+                        <TextArea required />
+                    </FormGroup>
+                    <SubmitButton whileTap={{ scale: 0.95 }} type="submit">
+                        Отправить
+                    </SubmitButton>
+                </ContactForm>
 
-export default Contact; 
+                <ContactInfo ref={infoRef}>
+                    <InfoCard>
+                        <InfoTitle>Контактная информация</InfoTitle>
+                        <InfoText>
+                            Email: <span style={{ color: `#f0eeee` }}>sharifjonfaizulloev88@gmail.com</span>
+                        </InfoText>
+                        <InfoText>
+                            Телефон: <span style={{ color: `#f0eeee` }}>+992 (93) 733-50-00</span>
+                        </InfoText>
+                        <InfoText>
+                            Адрес:{' '}
+                            <span style={{ color: `#f0eeee` }}>Б. Гафуровский район, ул. Наимджон Махмудов №1</span>
+                        </InfoText>
+                    </InfoCard>
+
+                    <InfoCard>
+                        <InfoTitle>Часы работы</InfoTitle>
+                        <InfoText>Пн-Пт: 8:00 - 24:00</InfoText>
+                        <InfoText>Воскресенье: Выходной</InfoText>
+                    </InfoCard>
+
+                    <Map>
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d377.03721825054973!2d69.76248013972878!3d40.193692637146384!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDDCsDExJzM3LjMiTiA2OcKwNDUnNDQuOSJF!5e0!3m2!1sru!2s!4v1635789245844!5m2!1sru!2s"
+                            allowFullScreen=""
+                            loading="lazy"
+                            referrerPolicy="no-referrer-when-downgrade"></iframe>
+                    </Map>
+
+                    <SocialLinks>
+                        <SocialIcon
+                            href="https://www.instagram.com/fayzdesign/"
+                            target="_blank"
+                            whileHover={{ y: -3 }}
+                            aria-label="Instagram">
+                            <FaInstagram />
+                        </SocialIcon>
+                        <SocialIcon
+                            href="https://t.me/fayzdesigntj"
+                            target="_blank"
+                            whileHover={{ y: -3 }}
+                            aria-label="Telegram">
+                            <FaTelegram />
+                        </SocialIcon>
+                        <SocialIcon href="https://x.com/sharifjon_fayz" target="_blank" whileHover={{ y: -3 }}>
+                            <FaXTwitter />
+                        </SocialIcon>
+                    </SocialLinks>
+                </ContactInfo>
+            </ContactGrid>
+            {formStatus && (
+                <FormStatus
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 50 }}
+                    success={formStatus.success}>
+                    {formStatus.message}
+                </FormStatus>
+            )}
+        </ContactSection>
+    )
+}
+
+export default Contact

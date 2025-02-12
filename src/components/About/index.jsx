@@ -487,11 +487,11 @@ const About = () => {
                 </ContentWrapper>
                 <Stats ref={statsRef}>
                     <StatItem>
-                        <h3>10+</h3>
+                        <h3>20+</h3>
                         <p>Лет в архитектуре</p>
                     </StatItem>
                     <StatItem>
-                        <h3>30+</h3>
+                        <h3>180+</h3>
                         <p>Успешных проектов</p>
                     </StatItem>
                     <StatItem>
@@ -499,7 +499,7 @@ const About = () => {
                         <p>Экспертов в команде</p>
                     </StatItem>
                     <StatItem>
-                        <h3>25+</h3>
+                        <h3>150+</h3>
                         <p>Довольных клиентов</p>
                     </StatItem>
                 </Stats>
